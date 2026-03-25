@@ -1,0 +1,5 @@
+{
+  "name": "Calculadora do SUS",
+  "description": "Descubra quanto você paga de impostos e qual o custo do SUS por pessoa no Brasil.",
+  "requestFramePermissions": []
+}

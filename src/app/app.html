@@ -1,0 +1,313 @@
+<div class="min-h-screen bg-[#FAFAFA] text-zinc-900 font-sans selection:bg-indigo-100 selection:text-indigo-900 flex flex-col">
+  <!-- Hero -->
+  <header class="pt-16 md:pt-24 pb-12 md:pb-16 px-4 md:px-6 max-w-4xl mx-auto text-center">
+    <div class="inline-flex items-center gap-2 px-3 py-1 mb-6 md:mb-8 rounded-full bg-white border border-zinc-200 shadow-sm">
+      <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+      <span class="text-[10px] md:text-[11px] font-semibold tracking-widest uppercase text-zinc-600">Análise de Dados Públicos</span>
+    </div>
+    <h1 class="text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tighter text-zinc-900 mb-4 md:mb-6">
+      O Custo Real do SUS
+    </h1>
+    <p class="text-base md:text-lg text-zinc-500 max-w-2xl mx-auto leading-relaxed font-light px-2">
+      Descubra quanto você paga de impostos, como isso financia a saúde pública e por que o sistema atual pesa mais para os mais pobres.
+    </p>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-4 md:px-6 flex-grow">
+    <!-- Main Calculator Bento -->
+    <section class="bg-white rounded-3xl md:rounded-[2.5rem] p-6 sm:p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-zinc-100 mb-8 relative overflow-hidden">
+      <!-- decorative blur -->
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-lg h-32 bg-indigo-500/5 blur-[100px] rounded-full pointer-events-none"></div>
+
+      <div class="max-w-md mx-auto mb-16 relative z-10">
+        <label for="salary" class="block text-[11px] font-bold text-zinc-400 uppercase tracking-[0.2em] text-center mb-6">
+          Sua Renda Mensal
+        </label>
+        <div class="relative group">
+          <input 
+            type="text" 
+            inputmode="numeric"
+            id="salary" 
+            [value]="displaySalary()"
+            (input)="onSalaryChange($event)"
+            class="block w-full text-center text-4xl sm:text-5xl md:text-7xl font-light tracking-tight text-zinc-900 bg-transparent border-0 border-b border-zinc-200 focus:border-indigo-600 focus:ring-0 transition-colors pb-3 md:pb-4 placeholder-zinc-200"
+            placeholder="R$ 0,00"
+          >
+        </div>
+      </div>
+
+      @if (currentBracket()) {
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 animate-fade-in relative z-10">
+          <!-- Tax Paid -->
+          <div class="bg-zinc-50/80 rounded-2xl md:rounded-[2rem] p-6 md:p-8 border border-zinc-100 flex flex-col items-center justify-center text-center group hover:bg-zinc-50 transition-colors">
+            <h3 class="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] mb-3 md:mb-4">Sua Contribuição para o SUS</h3>
+            <div class="flex items-baseline justify-center gap-2 mb-3 md:mb-4 flex-wrap">
+              <p class="text-3xl sm:text-4xl md:text-5xl font-light tracking-tight text-zinc-900">
+                {{ estimatedSusTaxPaid() | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
+              </p>
+              <span class="text-lg md:text-xl text-zinc-500 font-medium whitespace-nowrap">por mês</span>
+            </div>
+            <div class="inline-flex items-center px-3 py-1.5 rounded-full bg-white border border-zinc-200 text-[11px] md:text-xs font-medium text-zinc-600 shadow-sm">
+              <span class="text-zinc-900 font-semibold mr-1">{{ susTaxPercentOfIncome() | number:'1.1-1':'pt-BR' }}%</span> da sua renda mensal
+            </div>
+            <p class="text-[10px] text-zinc-400 mt-4 leading-relaxed max-w-[200px]">
+              Estimativa de quanto dos seus impostos vão diretamente para financiar a saúde pública.
+            </p>
+          </div>
+
+          <!-- SUS Cost -->
+          <div class="bg-indigo-50/50 rounded-2xl md:rounded-[2rem] p-6 md:p-8 border border-indigo-100/50 flex flex-col items-center justify-center text-center group hover:bg-indigo-50/80 transition-colors">
+            <h3 class="text-[10px] font-bold text-indigo-400 uppercase tracking-[0.2em] mb-3 md:mb-4">Custo do SUS por Pessoa</h3>
+            <div class="flex items-baseline justify-center gap-2 mb-3 md:mb-4 flex-wrap">
+              <p class="text-3xl sm:text-4xl md:text-5xl font-light tracking-tight text-indigo-900">
+                ~R$ 115,00
+              </p>
+              <span class="text-lg md:text-xl text-indigo-500 font-medium whitespace-nowrap">por mês</span>
+            </div>
+            <div class="inline-flex items-center px-3 py-1.5 rounded-full bg-white border border-indigo-100 text-[11px] md:text-xs font-medium text-indigo-700 shadow-sm">
+              Equivale a <span class="font-semibold mx-1">~R$ 4,00</span> por dia
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 p-4 rounded-2xl border {{ currentBracket()?.colorClass }} flex items-center justify-center gap-3 animate-fade-in text-sm">
+          <mat-icon class="text-[18px] w-[18px] h-[18px] opacity-70">info</mat-icon>
+          <span>Sua faixa de renda é considerada <strong class="font-semibold">{{ currentBracket()?.characteristic }}</strong>.</span>
+        </div>
+      }
+    </section>
+
+    <!-- Bento Grid for Info -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 mb-8">
+      
+      <!-- Table Section (Spans 2 cols) -->
+      <section class="lg:col-span-2 bg-white rounded-3xl md:rounded-[2.5rem] p-6 md:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-zinc-100 overflow-hidden">
+        <div class="flex items-center justify-between mb-6 md:mb-8">
+          <h2 class="text-lg md:text-xl font-semibold text-zinc-900 tracking-tight">Distribuição por Faixa</h2>
+          <div class="w-8 h-8 rounded-full bg-zinc-50 flex items-center justify-center border border-zinc-100 shrink-0">
+            <mat-icon class="text-zinc-400 text-[18px] w-[18px] h-[18px]">bar_chart</mat-icon>
+          </div>
+        </div>
+        
+        <div class="overflow-x-auto -mx-6 md:mx-0 px-6 md:px-0">
+          <table class="w-full text-left border-collapse min-w-[500px]">
+            <thead>
+              <tr>
+                <th class="pb-3 md:pb-4 text-[10px] font-bold text-zinc-400 uppercase tracking-[0.15em] border-b border-zinc-100">Renda Mensal</th>
+                <th class="pb-3 md:pb-4 text-[10px] font-bold text-zinc-400 uppercase tracking-[0.15em] border-b border-zinc-100">Imposto Principal</th>
+                <th class="pb-3 md:pb-4 text-[10px] font-bold text-zinc-400 uppercase tracking-[0.15em] border-b border-zinc-100 text-right">% Média</th>
+                <th class="pb-3 md:pb-4 text-[10px] font-bold text-zinc-400 uppercase tracking-[0.15em] border-b border-zinc-100 text-right">Destinado ao SUS (Mês)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-zinc-50">
+              @for (bracket of taxBrackets; track bracket.income) {
+                <tr class="group hover:bg-zinc-50/50 transition-colors">
+                  <td class="py-3 md:py-4 pr-3 md:pr-4 font-medium text-zinc-900 text-xs md:text-sm whitespace-nowrap">{{ bracket.income }}</td>
+                  <td class="py-3 md:py-4 pr-3 md:pr-4 text-xs md:text-sm text-zinc-500">{{ bracket.mainTax }}</td>
+                  <td class="py-3 md:py-4 pr-3 md:pr-4 text-xs md:text-sm font-mono text-zinc-700 text-right">{{ bracket.avgTaxPercent }}%</td>
+                  <td class="py-3 md:py-4 text-right whitespace-nowrap">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white border border-zinc-200 shadow-sm text-[11px] md:text-xs font-mono font-medium text-zinc-700">
+                      {{ bracket.estimatedTax }}
+                    </span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Explanation Side Card -->
+      <section class="bg-zinc-900 rounded-3xl md:rounded-[2.5rem] p-6 md:p-10 shadow-lg border border-zinc-800 text-white flex flex-col">
+        <div class="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center border border-zinc-700 mb-6 md:mb-8 shrink-0">
+          <mat-icon class="text-zinc-300 text-[20px] w-[20px] h-[20px]">insights</mat-icon>
+        </div>
+        <h2 class="text-xl font-semibold mb-6 tracking-tight">A Realidade do Sistema</h2>
+        
+        <div class="space-y-6 flex-grow">
+          <div>
+            <h3 class="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] mb-2">A Ilusão</h3>
+            <p class="text-sm text-zinc-300 leading-relaxed font-light">
+              Muitos acreditam que apenas quem paga Imposto de Renda financia o Estado.
+            </p>
+          </div>
+          <div class="w-full h-px bg-zinc-800"></div>
+          <div>
+            <h3 class="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] mb-2">O Fato</h3>
+            <p class="text-sm text-zinc-300 leading-relaxed font-light">
+              Impostos sobre consumo (ICMS, PIS/Cofins) estão embutidos em tudo. Quem ganha menos gasta 100% da renda consumindo, sendo taxado em tudo.
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- SUS Details & Conclusion Bento -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-8">
+      <!-- O que o SUS entrega -->
+      <section class="bg-white rounded-3xl md:rounded-[2.5rem] p-6 md:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-zinc-100 flex flex-col">
+        <h2 class="text-lg md:text-xl font-semibold text-zinc-900 tracking-tight mb-4 md:mb-6">O que o SUS entrega?</h2>
+        <p class="text-xs md:text-sm text-zinc-500 mb-6 md:mb-8 leading-relaxed">
+          Com um custo per capita de apenas ~R$ 115/mês, o sistema oferece uma cobertura que custaria milhares de reais na rede privada.
+        </p>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 flex-grow">
+          <div class="p-4 rounded-2xl bg-zinc-50 border border-zinc-100 flex sm:flex-col items-center sm:items-start gap-3 sm:gap-2">
+            <mat-icon class="text-indigo-500 shrink-0">vaccines</mat-icon>
+            <span class="text-sm font-medium text-zinc-900">Vacinas & Remédios</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-zinc-50 border border-zinc-100 flex sm:flex-col items-center sm:items-start gap-3 sm:gap-2">
+            <mat-icon class="text-indigo-500 shrink-0">favorite</mat-icon>
+            <span class="text-sm font-medium text-zinc-900">Transplantes</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-zinc-50 border border-zinc-100 flex sm:flex-col items-center sm:items-start gap-3 sm:gap-2">
+            <mat-icon class="text-indigo-500 shrink-0">emergency</mat-icon>
+            <span class="text-sm font-medium text-zinc-900">Emergências (SAMU)</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-zinc-50 border border-zinc-100 flex sm:flex-col items-center sm:items-start gap-3 sm:gap-2">
+            <mat-icon class="text-indigo-500 shrink-0">medical_services</mat-icon>
+            <span class="text-sm font-medium text-zinc-900">Cirurgias Complexas</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- A Dupla Tributação -->
+      <section class="bg-indigo-600 rounded-3xl md:rounded-[2.5rem] p-6 md:p-10 shadow-lg border border-indigo-500 text-white relative overflow-hidden flex flex-col">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-500 rounded-full opacity-50 blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+        <div class="relative z-10 h-full flex flex-col">
+          <h2 class="text-lg md:text-xl font-semibold tracking-tight mb-4 md:mb-6">A Dupla Tributação</h2>
+          <p class="text-indigo-100 text-xs md:text-sm leading-relaxed mb-6 md:mb-8 flex-grow">
+            O maior problema social do Brasil: o cidadão de baixa renda paga impostos altíssimos via consumo para financiar o SUS. Porém, devido aos gargalos no sistema, muitas vezes precisa pagar novamente por consultas ou exames privados para ser atendido a tempo.
+          </p>
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 w-fit mt-auto">
+            <mat-icon class="text-indigo-200 text-[18px] w-[18px] h-[18px]">warning</mat-icon>
+            <span class="text-xs font-medium text-indigo-50">O sistema pune os mais vulneráveis.</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- The Critical Problems Section -->
+    <section class="mb-12">
+      <div class="bg-zinc-950 rounded-3xl md:rounded-[2.5rem] p-6 md:p-12 shadow-2xl border border-zinc-900 text-white relative overflow-hidden">
+        <!-- Background accents -->
+        <div class="absolute top-0 right-0 w-full md:w-1/2 h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-rose-900/20 via-zinc-950 to-zinc-950 pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-full md:w-1/2 h-full bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-rose-900/10 via-zinc-950 to-zinc-950 pointer-events-none"></div>
+        
+        <div class="relative z-10">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 mb-6 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400">
+            <mat-icon class="text-[14px] w-[14px] h-[14px]">error_outline</mat-icon>
+            <span class="text-[10px] font-bold uppercase tracking-widest">A Realidade Cruel</span>
+          </div>
+          
+          <h2 class="text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tighter mb-4 text-zinc-100">O Colapso Silencioso</h2>
+          <p class="text-zinc-400 text-sm md:text-base max-w-2xl leading-relaxed mb-10 md:mb-12">
+            Apesar de ser um dos maiores sistemas de saúde do mundo, o subfinanciamento crônico, a má gestão e a corrupção cobram um preço altíssimo: a vida e a dignidade da população mais vulnerável.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Problem 1 -->
+            <div class="bg-zinc-900/40 border border-zinc-800/50 rounded-2xl p-6 hover:bg-zinc-900/80 transition-colors group">
+              <div class="w-10 h-10 rounded-full bg-rose-500/10 flex items-center justify-center mb-5 border border-rose-500/20 group-hover:bg-rose-500/20 transition-colors">
+                <mat-icon class="text-rose-400 text-[20px] w-[20px] h-[20px]">hourglass_disabled</mat-icon>
+              </div>
+              <h3 class="text-lg font-medium text-zinc-100 mb-3">As Filas da Morte</h3>
+              <p class="text-sm text-zinc-500 leading-relaxed">
+                Pacientes aguardam meses ou até anos por cirurgias eletivas, exames complexos ou consultas com especialistas. Muitos não sobrevivem ao tempo de espera.
+              </p>
+            </div>
+
+            <!-- Problem 2 -->
+            <div class="bg-zinc-900/40 border border-zinc-800/50 rounded-2xl p-6 hover:bg-zinc-900/80 transition-colors group">
+              <div class="w-10 h-10 rounded-full bg-rose-500/10 flex items-center justify-center mb-5 border border-rose-500/20 group-hover:bg-rose-500/20 transition-colors">
+                <mat-icon class="text-rose-400 text-[20px] w-[20px] h-[20px]">domain_disabled</mat-icon>
+              </div>
+              <h3 class="text-lg font-medium text-zinc-100 mb-3">Sucateamento</h3>
+              <p class="text-sm text-zinc-500 leading-relaxed">
+                Hospitais superlotados com pacientes em macas nos corredores, infraestrutura precária e falta frequente de insumos básicos como medicamentos, gazes e seringas.
+              </p>
+            </div>
+
+            <!-- Problem 3 -->
+            <div class="bg-zinc-900/40 border border-zinc-800/50 rounded-2xl p-6 hover:bg-zinc-900/80 transition-colors group">
+              <div class="w-10 h-10 rounded-full bg-rose-500/10 flex items-center justify-center mb-5 border border-rose-500/20 group-hover:bg-rose-500/20 transition-colors">
+                <mat-icon class="text-rose-400 text-[20px] w-[20px] h-[20px]">account_balance_wallet</mat-icon>
+              </div>
+              <h3 class="text-lg font-medium text-zinc-100 mb-3">Má Gestão</h3>
+              <p class="text-sm text-zinc-500 leading-relaxed">
+                Desperdício de recursos públicos, desvios e ineficiência administrativa fazem com que o dinheiro dos impostos não chegue onde realmente importa: no atendimento final.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Enhanced Footer -->
+  <footer class="bg-zinc-950 text-zinc-400 py-12 md:py-16 border-t border-zinc-900 mt-8 md:mt-12">
+    <div class="max-w-5xl mx-auto px-4 md:px-6">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-8 mb-12 md:mb-16">
+        
+        <!-- Brand & About -->
+        <div class="md:col-span-5 lg:col-span-4 flex flex-col">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-sm">
+              <mat-icon class="text-zinc-950 text-[18px] w-[18px] h-[18px]">account_balance</mat-icon>
+            </div>
+            <span class="text-base font-semibold text-white tracking-tight">Calculadora do SUS</span>
+          </div>
+          <p class="text-xs leading-relaxed text-zinc-500 mb-6">
+            Uma ferramenta educativa para ajudar a visualizar o impacto dos impostos no financiamento da saúde pública no Brasil. O objetivo é trazer transparência e conscientização sobre o custo do Estado.
+          </p>
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 w-fit">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="text-[10px] font-medium text-zinc-300 uppercase tracking-wider">Dados Abertos</span>
+          </div>
+        </div>
+
+        <!-- Methodology -->
+        <div class="md:col-span-7 lg:col-span-6 lg:col-start-7 flex flex-col">
+          <h3 class="text-sm font-semibold text-white mb-6 flex items-center gap-2">
+            <mat-icon class="text-zinc-500 text-[18px] w-[18px] h-[18px]">menu_book</mat-icon>
+            Metodologia & Fontes
+          </h3>
+          <p class="text-xs text-zinc-500 leading-relaxed mb-6">
+            O valor da contribuição para o SUS é uma estimativa. Multiplicamos a renda mensal pela alíquota média de impostos e consideramos que cerca de 12% da arrecadação total do Estado é destinada à saúde pública. O custo médio do SUS é calculado dividindo o orçamento anual executado pela população brasileira.
+          </p>
+          <ul class="space-y-3 text-xs text-zinc-400">
+            <li>
+              <a href="https://impostometro.com.br/" target="_blank" rel="noopener noreferrer" class="flex items-start gap-3 group hover:text-white transition-colors">
+                <mat-icon class="text-zinc-600 text-[14px] w-[14px] h-[14px] mt-0.5 group-hover:text-indigo-400 transition-colors">link</mat-icon>
+                <span>Estudos de Carga Tributária (Ipea, IBPT)</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://portaldatransparencia.gov.br/funcoes/10-saude" target="_blank" rel="noopener noreferrer" class="flex items-start gap-3 group hover:text-white transition-colors">
+                <mat-icon class="text-zinc-600 text-[14px] w-[14px] h-[14px] mt-0.5 group-hover:text-indigo-400 transition-colors">link</mat-icon>
+                <span>Orçamento da Saúde (Portal da Transparência)</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.ibge.gov.br/estatisticas/sociais/populacao.html" target="_blank" rel="noopener noreferrer" class="flex items-start gap-3 group hover:text-white transition-colors">
+                <mat-icon class="text-zinc-600 text-[14px] w-[14px] h-[14px] mt-0.5 group-hover:text-indigo-400 transition-colors">link</mat-icon>
+                <span>Dados Populacionais (IBGE)</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="pt-8 border-t border-zinc-800/50 flex flex-col md:flex-row justify-between items-center gap-4">
+        <p class="text-[11px] text-zinc-600 font-medium">
+          &copy; 2026 Calculadora do SUS. Projeto de código aberto.
+        </p>
+        <p class="text-[10px] text-zinc-600 text-center md:text-right max-w-sm">
+          Os valores apresentados são estimativas médias baseadas em perfis de consumo e não substituem o cálculo exato de um profissional contábil.
+        </p>
+      </div>
+    </div>
+  </footer>
+</div>
