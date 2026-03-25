@@ -111,7 +111,7 @@ O cálculo atual é simplificado e segue a lógica implementada em `src/app/app.
 - As faixas e percentuais são estáticos no código.
 - A divisão entre consumo e IR é aproximada por faixa de renda.
 - O custo per capita do SUS está fixado na interface.
-- O repositório ainda contém alguns vestígios do template original, como referências a `GEMINI_API_KEY` e AI Studio, que não fazem parte da regra atual da aplicação.
+- O repositório ainda contém alguns vestígios menores do template original, fora da lógica principal da aplicação.
 
 ## Melhorias recomendadas
 

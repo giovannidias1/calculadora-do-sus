@@ -11,7 +11,7 @@
 - O produto está funcional como landing page calculadora de página única.
 - A lógica principal está concentrada em [`src/app/app.ts`](E:/Projetos/calculadora-do-sus/src/app/app.ts).
 - A interface inteira está em [`src/app/app.html`](E:/Projetos/calculadora-do-sus/src/app/app.html).
-- O repositório parece ter sido iniciado a partir de um template de AI Studio e ainda carrega sobras desse bootstrap.
+- O repositório parece ter sido iniciado a partir de um template e ainda carrega algumas sobras de bootstrap.
 
 ## Regras de negócio implementadas
 
@@ -34,8 +34,6 @@
 ## Pendências e inconsistências conhecidas
 
 - Há sinais de encoding incorreto em alguns textos exibidos no código-fonte.
-- `metadata.json` e `.env.example` ainda citam template/AI Studio/Gemini.
-- `angular.json` ainda define `GEMINI_API_KEY`, embora a aplicação atual não use essa variável.
 - A divisão entre consumo e IR é aproximada por faixa de renda, não por regra fiscal individual real.
 
 ## Próximos passos recomendados

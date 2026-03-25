@@ -110,15 +110,6 @@
           </div>
         </div>
 
-        <div class="mt-6 p-4 rounded-2xl border {{ currentBracket()?.colorClass }} flex items-center justify-center gap-3 animate-fade-in text-sm">
-          <mat-icon class="text-[18px] w-[18px] h-[18px] opacity-70">info</mat-icon>
-          <span>
-            Sua faixa de renda é considerada <strong class="font-semibold">{{ currentBracket()?.characteristic }}</strong>.
-            Da carga média estimada de <strong class="font-semibold">{{ currentBracket()?.avgTaxPercent | number:'1.1-1':'pt-BR' }}%</strong>,
-            cerca de <strong class="font-semibold">{{ currentBracket()?.consumptionTaxPercent | number:'1.1-1':'pt-BR' }} p.p.</strong> vêm do consumo e
-            <strong class="font-semibold">{{ currentBracket()?.incomeTaxPercent | number:'1.1-1':'pt-BR' }} p.p.</strong> do IR.
-          </span>
-        </div>
       }
     </section>
 
