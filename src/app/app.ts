@@ -8,9 +8,10 @@ registerLocaleData(localePt, 'pt-BR');
 interface TaxBracket {
   income: string;
   maxIncome: number;
-  mainTax: string;
   avgTaxPercent: number;
-  estimatedTax: string;
+  consumptionTaxPercent: number;
+  incomeTaxPercent: number;
+  estimatedSusContribution: string;
   characteristic: string;
   colorClass: string;
   badgeClass: string;
@@ -28,11 +29,11 @@ export class App {
   displaySalary = signal<string>('');
 
   taxBrackets: TaxBracket[] = [
-    { income: 'Até R$ 1.500', maxIncome: 1500, mainTax: 'Consumo (ICMS, PIS, Cofins)', avgTaxPercent: 25, estimatedTax: '~ R$ 45,00 / mês', characteristic: 'Regressivo (paga muito proporcionalmente)', colorClass: 'bg-rose-50/50 text-rose-700 border-rose-100', badgeClass: '' },
-    { income: 'Até R$ 3.000', maxIncome: 3000, mainTax: 'Consumo + pouco IR', avgTaxPercent: 27, estimatedTax: '~ R$ 97,00 / mês', characteristic: 'Ainda regressivo', colorClass: 'bg-rose-50/50 text-rose-700 border-rose-100', badgeClass: '' },
-    { income: 'Até R$ 8.000', maxIncome: 8000, mainTax: 'Consumo + IR', avgTaxPercent: 30, estimatedTax: '~ R$ 288,00 / mês', characteristic: 'Misto', colorClass: 'bg-amber-50/50 text-amber-700 border-amber-100', badgeClass: '' },
-    { income: 'Até R$ 20.000', maxIncome: 20000, mainTax: 'IR + consumo', avgTaxPercent: 32, estimatedTax: '~ R$ 768,00 / mês', characteristic: 'Mais progressivo', colorClass: 'bg-emerald-50/50 text-emerald-700 border-emerald-100', badgeClass: '' },
-    { income: 'R$ 100.000+', maxIncome: Infinity, mainTax: 'IR + investimentos', avgTaxPercent: 25, estimatedTax: '~ R$ 2.400 a 3.000 / mês', characteristic: 'Volta a ser regressivo', colorClass: 'bg-rose-50/50 text-rose-700 border-rose-100', badgeClass: '' },
+    { income: 'Ate R$ 1.500', maxIncome: 1500, avgTaxPercent: 25, consumptionTaxPercent: 25, incomeTaxPercent: 0, estimatedSusContribution: '~ R$ 45,00 / mes', characteristic: 'Regressivo (paga muito proporcionalmente)', colorClass: 'bg-rose-50/50 text-rose-700 border-rose-100', badgeClass: '' },
+    { income: 'Ate R$ 3.000', maxIncome: 3000, avgTaxPercent: 27, consumptionTaxPercent: 24, incomeTaxPercent: 3, estimatedSusContribution: '~ R$ 97,00 / mes', characteristic: 'Ainda regressivo', colorClass: 'bg-rose-50/50 text-rose-700 border-rose-100', badgeClass: '' },
+    { income: 'Ate R$ 8.000', maxIncome: 8000, avgTaxPercent: 30, consumptionTaxPercent: 18, incomeTaxPercent: 12, estimatedSusContribution: '~ R$ 288,00 / mes', characteristic: 'Misto', colorClass: 'bg-amber-50/50 text-amber-700 border-amber-100', badgeClass: '' },
+    { income: 'Ate R$ 20.000', maxIncome: 20000, avgTaxPercent: 32, consumptionTaxPercent: 12, incomeTaxPercent: 20, estimatedSusContribution: '~ R$ 768,00 / mes', characteristic: 'Mais progressivo', colorClass: 'bg-emerald-50/50 text-emerald-700 border-emerald-100', badgeClass: '' },
+    { income: 'R$ 100.000+', maxIncome: Infinity, avgTaxPercent: 25, consumptionTaxPercent: 8, incomeTaxPercent: 17, estimatedSusContribution: '~ R$ 2.400 a 3.000 / mes', characteristic: 'Volta a ser regressivo', colorClass: 'bg-rose-50/50 text-rose-700 border-rose-100', badgeClass: '' },
   ];
 
   currentBracket = computed(() => {
@@ -44,28 +45,51 @@ export class App {
         return bracket;
       }
     }
+
     return this.taxBrackets[this.taxBrackets.length - 1];
   });
 
   estimatedSusTaxPaid = computed(() => {
-    const currentSalary = this.salary();
     const bracket = this.currentBracket();
-    if (currentSalary === null || currentSalary <= 0 || !bracket) return 0;
-    const totalTax = (currentSalary * bracket.avgTaxPercent) / 100;
-    // Aproximadamente 12% da arrecadação total de impostos vai para a saúde pública (SUS)
+    if (!bracket) return 0;
+
+    const totalTax = this.calculateTaxAmount(bracket.avgTaxPercent);
+    // Aproximadamente 12% da arrecadacao total de impostos vai para a saude publica (SUS)
     return totalTax * 0.12;
+  });
+
+  estimatedConsumptionTaxPaid = computed(() => {
+    const bracket = this.currentBracket();
+    if (!bracket) return 0;
+
+    return this.calculateTaxAmount(bracket.consumptionTaxPercent);
+  });
+
+  estimatedIncomeTaxPaid = computed(() => {
+    const bracket = this.currentBracket();
+    if (!bracket) return 0;
+
+    return this.calculateTaxAmount(bracket.incomeTaxPercent);
   });
 
   susTaxPercentOfIncome = computed(() => {
     const bracket = this.currentBracket();
     if (!bracket) return 0;
+
     return bracket.avgTaxPercent * 0.12;
   });
+
+  private calculateTaxAmount(percent: number) {
+    const currentSalary = this.salary();
+    if (currentSalary === null || currentSalary <= 0) return 0;
+
+    return (currentSalary * percent) / 100;
+  }
 
   onSalaryChange(event: Event) {
     const input = event.target as HTMLInputElement;
     const rawValue = input.value.replace(/\D/g, '');
-    
+
     if (!rawValue) {
       this.salary.set(null);
       this.displaySalary.set('');
@@ -78,7 +102,7 @@ export class App {
 
     const formatted = new Intl.NumberFormat('pt-BR', {
       style: 'currency',
-      currency: 'BRL'
+      currency: 'BRL',
     }).format(numericValue);
 
     this.displaySalary.set(formatted);
