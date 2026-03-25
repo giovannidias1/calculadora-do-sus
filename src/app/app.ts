@@ -29,11 +29,11 @@ export class App {
   displaySalary = signal<string>('');
 
   taxBrackets: TaxBracket[] = [
-    { income: 'Ate R$ 1.500', maxIncome: 1500, avgTaxPercent: 25, consumptionTaxPercent: 25, incomeTaxPercent: 0, estimatedSusContribution: '~ R$ 45,00 / mes', characteristic: 'Regressivo (paga muito proporcionalmente)', colorClass: 'bg-rose-50/50 text-rose-700 border-rose-100', badgeClass: '' },
-    { income: 'Ate R$ 3.000', maxIncome: 3000, avgTaxPercent: 27, consumptionTaxPercent: 24, incomeTaxPercent: 3, estimatedSusContribution: '~ R$ 97,00 / mes', characteristic: 'Ainda regressivo', colorClass: 'bg-rose-50/50 text-rose-700 border-rose-100', badgeClass: '' },
-    { income: 'Ate R$ 8.000', maxIncome: 8000, avgTaxPercent: 30, consumptionTaxPercent: 18, incomeTaxPercent: 12, estimatedSusContribution: '~ R$ 288,00 / mes', characteristic: 'Misto', colorClass: 'bg-amber-50/50 text-amber-700 border-amber-100', badgeClass: '' },
-    { income: 'Ate R$ 20.000', maxIncome: 20000, avgTaxPercent: 32, consumptionTaxPercent: 12, incomeTaxPercent: 20, estimatedSusContribution: '~ R$ 768,00 / mes', characteristic: 'Mais progressivo', colorClass: 'bg-emerald-50/50 text-emerald-700 border-emerald-100', badgeClass: '' },
-    { income: 'R$ 100.000+', maxIncome: Infinity, avgTaxPercent: 25, consumptionTaxPercent: 8, incomeTaxPercent: 17, estimatedSusContribution: '~ R$ 2.400 a 3.000 / mes', characteristic: 'Volta a ser regressivo', colorClass: 'bg-rose-50/50 text-rose-700 border-rose-100', badgeClass: '' },
+    { income: 'Até R$ 1.500', maxIncome: 1500, avgTaxPercent: 25, consumptionTaxPercent: 25, incomeTaxPercent: 0, estimatedSusContribution: '~ R$ 45,00 / mês', characteristic: 'Regressivo (paga muito proporcionalmente)', colorClass: 'bg-rose-50/50 text-rose-700 border-rose-100', badgeClass: '' },
+    { income: 'Até R$ 3.000', maxIncome: 3000, avgTaxPercent: 27, consumptionTaxPercent: 24, incomeTaxPercent: 3, estimatedSusContribution: '~ R$ 97,00 / mês', characteristic: 'Ainda regressivo', colorClass: 'bg-rose-50/50 text-rose-700 border-rose-100', badgeClass: '' },
+    { income: 'Até R$ 8.000', maxIncome: 8000, avgTaxPercent: 30, consumptionTaxPercent: 18, incomeTaxPercent: 12, estimatedSusContribution: '~ R$ 288,00 / mês', characteristic: 'Misto', colorClass: 'bg-amber-50/50 text-amber-700 border-amber-100', badgeClass: '' },
+    { income: 'Até R$ 20.000', maxIncome: 20000, avgTaxPercent: 32, consumptionTaxPercent: 12, incomeTaxPercent: 20, estimatedSusContribution: '~ R$ 768,00 / mês', characteristic: 'Mais progressivo', colorClass: 'bg-emerald-50/50 text-emerald-700 border-emerald-100', badgeClass: '' },
+    { income: 'R$ 100.000+', maxIncome: Infinity, avgTaxPercent: 25, consumptionTaxPercent: 8, incomeTaxPercent: 17, estimatedSusContribution: '~ R$ 2.400 a 3.000 / mês', characteristic: 'Volta a ser regressivo', colorClass: 'bg-rose-50/50 text-rose-700 border-rose-100', badgeClass: '' },
   ];
 
   currentBracket = computed(() => {
@@ -54,7 +54,7 @@ export class App {
     if (!bracket) return 0;
 
     const totalTax = this.calculateTaxAmount(bracket.avgTaxPercent);
-    // Aproximadamente 12% da arrecadacao total de impostos vai para a saude publica (SUS)
+    // Aproximadamente 12% da arrecadação total de impostos vai para a saúde pública (SUS)
     return totalTax * 0.12;
   });
 

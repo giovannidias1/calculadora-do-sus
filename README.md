@@ -1,26 +1,26 @@
 # Calculadora do SUS
 
-Aplicacao web em Angular que estima quanto da renda mensal de uma pessoa e convertida em financiamento do SUS, com base em faixas de tributacao medias e em uma alocacao aproximada da arrecadacao publica para a saude.
+Aplicação web em Angular que estima quanto da renda mensal de uma pessoa é convertida em financiamento do SUS, com base em faixas de tributação médias e em uma alocação aproximada da arrecadação pública para a saúde.
 
 ## Objetivo
 
 O projeto tem foco educativo. A interface ajuda a visualizar:
 
-- quanto da renda mensal e absorvido por impostos em diferentes faixas;
+- quanto da renda mensal é absorvido por impostos em diferentes faixas;
 - qual parcela estimada desses impostos financia o SUS;
-- como a carga tributaria pode ser proporcionalmente mais pesada para faixas de renda mais baixas;
-- a diferenca entre a contribuicao estimada do cidadao e o custo medio per capita do sistema.
+- como a carga tributária pode ser proporcionalmente mais pesada para faixas de renda mais baixas;
+- a diferença entre a contribuição estimada do cidadão e o custo médio per capita do sistema.
 
 ## Funcionalidades
 
-- entrada de renda mensal com mascara monetaria em `pt-BR`;
-- classificacao automatica por faixa de renda;
-- discriminacao estimada entre impostos sobre consumo e Imposto de Renda;
-- calculo estimado da contribuicao mensal ao SUS;
-- exibicao da porcentagem da renda destinada ao financiamento da saude publica;
+- entrada de renda mensal com máscara monetária em `pt-BR`;
+- classificação automática por faixa de renda;
+- discriminação estimada entre impostos sobre consumo e Imposto de Renda;
+- cálculo estimado da contribuição mensal ao SUS;
+- exibição da porcentagem da renda destinada ao financiamento da saúde pública;
 - tabela comparativa por faixa de renda;
-- conteudo editorial explicativo sobre regressividade tributaria e cobertura do SUS;
-- renderizacao com Angular SSR;
+- conteúdo editorial explicativo sobre regressividade tributária e cobertura do SUS;
+- renderização com Angular SSR;
 - deploy automatizado no GitHub Pages.
 
 ## Stack
@@ -33,12 +33,12 @@ O projeto tem foco educativo. A interface ajuda a visualizar:
 
 ## Como executar localmente
 
-### Pre-requisitos
+### Pré-requisitos
 
 - Node.js
 - npm
 
-### Instalacao
+### Instalação
 
 ```bash
 npm install
@@ -50,7 +50,7 @@ npm install
 npm start
 ```
 
-A aplicacao ficara disponivel no endereco padrao informado pelo Angular CLI.
+A aplicação ficará disponível no endereço padrão informado pelo Angular CLI.
 
 Se preferir usar o script alternativo de desenvolvimento:
 
@@ -58,19 +58,19 @@ Se preferir usar o script alternativo de desenvolvimento:
 npm run dev
 ```
 
-## Scripts disponiveis
+## Scripts disponíveis
 
 ```bash
 npm start        # sobe o servidor de desenvolvimento
 npm run dev      # sobe o app em modo dev na porta 3000
-npm run build    # gera o build de producao
+npm run build    # gera o build de produção
 npm run build:pages
-npm run watch    # build continuo para desenvolvimento
-npm run test     # executa testes unitarios
+npm run watch    # build contínuo para desenvolvimento
+npm run test     # executa testes unitários
 npm run lint     # executa lint
 ```
 
-Apos o build, o servidor SSR pode ser iniciado com:
+Após o build, o servidor SSR pode ser iniciado com:
 
 ```bash
 npm run serve:ssr:app
@@ -81,7 +81,7 @@ npm run serve:ssr:app
 ```text
 src/
   app/
-    app.ts                 # estado da aplicacao e regras de calculo
+    app.ts                 # estado da aplicação e regras de cálculo
     app.html               # layout principal da interface
     app.css                # estilos do componente raiz
   styles.css               # Tailwind e estilos globais
@@ -95,32 +95,32 @@ public/
     deploy-pages.yml       # deploy do GitHub Pages
 ```
 
-## Metodologia de calculo
+## Metodologia de cálculo
 
-O calculo atual e simplificado e segue a logica implementada em `src/app/app.ts`:
+O cálculo atual é simplificado e segue a lógica implementada em `src/app/app.ts`:
 
-1. A renda mensal informada e associada a uma faixa de tributacao media.
-2. A carga total da faixa e discriminada entre consumo e IR com percentuais medios aproximados.
-3. O total estimado de impostos e calculado por `renda * aliquota_media`.
-4. A parcela destinada ao SUS e estimada em 12% desse total.
-5. A interface compara esse valor com um custo medio per capita do SUS de aproximadamente `R$ 115,00/mes`.
+1. A renda mensal informada é associada a uma faixa de tributação média.
+2. A carga total da faixa é discriminada entre consumo e IR com percentuais médios aproximados.
+3. O total estimado de impostos é calculado por `renda * aliquota_media`.
+4. A parcela destinada ao SUS é estimada em 12% desse total.
+5. A interface compara esse valor com um custo médio per capita do SUS de aproximadamente `R$ 115,00/mês`.
 
-## Limitacoes
+## Limitações
 
-- Os valores sao estimativas educativas, nao calculos fiscais oficiais.
-- As faixas e percentuais sao estaticos no codigo.
-- A divisao entre consumo e IR e aproximada por faixa de renda.
-- O custo per capita do SUS esta fixado na interface.
-- O repositorio ainda contem alguns vestigios do template original, como referencias a `GEMINI_API_KEY` e AI Studio, que nao fazem parte da regra atual da aplicacao.
+- Os valores são estimativas educativas, não cálculos fiscais oficiais.
+- As faixas e percentuais são estáticos no código.
+- A divisão entre consumo e IR é aproximada por faixa de renda.
+- O custo per capita do SUS está fixado na interface.
+- O repositório ainda contém alguns vestígios do template original, como referências a `GEMINI_API_KEY` e AI Studio, que não fazem parte da regra atual da aplicação.
 
 ## Melhorias recomendadas
 
 - externalizar faixas e percentuais para uma fonte versionada;
-- citar bases publicas e ano de referencia com mais precisao;
-- transformar o custo per capita em dado configuravel;
-- adicionar testes unitarios para a logica de enquadramento e calculo;
-- remover dependencias e configuracoes herdadas do template que nao sao usadas.
+- citar bases públicas e ano de referência com mais precisão;
+- transformar o custo per capita em dado configurável;
+- adicionar testes unitários para a lógica de enquadramento e cálculo;
+- remover dependências e configurações herdadas do template que não são usadas.
 
-## Licenca
+## Licença
 
-Defina aqui a licenca oficial do projeto antes de distribuicao publica.
+Defina aqui a licença oficial do projeto antes de distribuição pública.
